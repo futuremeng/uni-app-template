@@ -1,0 +1,9 @@
+.plan {
+  font-size: 2rem;
+}
+.lesson {
+  font-size: 1rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
