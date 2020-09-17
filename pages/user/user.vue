@@ -10,16 +10,20 @@
 				</view>
 			</view>
 			<view class="center-list">
-				<view class="center-list-item border-bottom">
-					<text class="list-icon">&#xe60f;</text>
-					<text class="list-text">我的计划</text>
-					<text class="navigat-arrow">&#xe65e;</text>
-				</view>
-				<view class="center-list-item">
-					<text class="list-icon">&#xe639;</text>
-					<text class="list-text">我的课程</text>
-					<text class="navigat-arrow">&#xe65e;</text>
-				</view>
+				<navigator url="/pages/plan/plan" hover-class="navigator-hover">
+					<view class="center-list-item border-bottom">
+						<text class="list-icon">&#xe60f;</text>
+						<text class="list-text">我的计划</text>
+						<text class="navigat-arrow">&#xe65e;</text>
+					</view>
+				</navigator>
+				<navigator url="/pages/lesson/lesson" hover-class="navigator-hover">
+					<view class="center-list-item">
+						<text class="list-icon">&#xe639;</text>
+						<text class="list-text">我的课程</text>
+						<text class="navigat-arrow">&#xe65e;</text>
+					</view>
+				</navigator>
 			</view>
 			<!-- <view class="center-list">
 				<view class="center-list-item border-bottom">
@@ -54,6 +58,7 @@
 			</view>
 			<view class="btn-row">
 				<button v-if="hasLogin" class="primary" type="primary" @tap="bindLogout">退出登录</button>
+				<button v-else class="primary" type="primary" @tap="bindLogin">立即登录</button>
 			</view>
 		</view>
 	</view>
@@ -77,9 +82,16 @@
 		methods: {
 			...mapMutations(['logout']),
 			bindLogin() {
-				uni.navigateTo({
-					url: '../login/login',
-				});
+				if(this.hasLogin){
+					uni.navigateTo({
+						url: './change/change',
+					});
+				}else{
+					uni.navigateTo({
+						url: '../login/login',
+					});
+				}
+				
 			},
 			bindLogout() {
 				const loginType = uni.getStorageSync('login_type')
@@ -93,46 +105,46 @@
 					return
 				}
 
-				uniCloud.callFunction({
-					name: 'user-center',
-					data: {
-						action: 'logout'
-					},
-					success: (e) => {
+				// uniCloud.callFunction({
+				// 	name: 'user-center',
+				// 	data: {
+				// 		action: 'logout'
+				// 	},
+				// 	success: (e) => {
 
-						console.log('logout success', e);
+				// 		console.log('logout success', e);
 
-						if (e.result.code == 0) {
-							this.logout();
-							uni.removeStorageSync('uniIdToken')
-							uni.removeStorageSync('username')
-							/**
-							 * 如果需要强制登录跳转回登录页面
-							 */
-							if (this.forcedLogin) {
-								uni.reLaunch({
-									url: '../login/login',
-								});
-							}
-						} else {
-							uni.showModal({
-								content: e.result.msg,
-								showCancel: false
-							})
-							console.log('登出失败', e);
-						}
+				// 		if (e.result.code == 0) {
+				// 			this.logout();
+				// 			uni.removeStorageSync('uniIdToken')
+				// 			uni.removeStorageSync('username')
+				// 			/**
+				// 			 * 如果需要强制登录跳转回登录页面
+				// 			 */
+				// 			if (this.forcedLogin) {
+				// 				uni.reLaunch({
+				// 					url: '../login/login',
+				// 				});
+				// 			}
+				// 		} else {
+				// 			uni.showModal({
+				// 				content: e.result.msg,
+				// 				showCancel: false
+				// 			})
+				// 			console.log('登出失败', e);
+				// 		}
 
-					},
-					fail(e) {
-						uni.showModal({
-							content: JSON.stringify(e),
-							showCancel: false
-						})
-					}
-				})
+				// 	},
+				// 	fail(e) {
+				// 		uni.showModal({
+				// 			content: JSON.stringify(e),
+				// 			showCancel: false
+				// 		})
+				// 	}
+				// })
 
 
-			}
+			},
 		}
 	}
 </script>

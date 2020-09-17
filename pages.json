@@ -1,10 +1,6 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页,
 		{
-			"path": "pages/lesson/lesson",
-			"style": {}
-		},
-		{
 			"path": "pages/main/main",
 			"style": {
 				"navigationBarTitleText": "登录模板"
@@ -31,18 +27,30 @@
 			}
 		}, {
 			"path": "pages/plan/plan",
-			"style": {}
-		}
-
-		, {
+			"style": {
+				"navigationBarTitleText": "计划"
+			}
+		},
+		{
+			"path": "pages/lesson/lesson",
+			"style": {
+				"navigationBarTitleText": "课程"
+			}
+		}, {
 			"path": "pages/review/review",
-			"style": {}
+			"style": {
+				"navigationBarTitleText": "回课"
+			}
 		}
 	],
 	"tabBar": {
-		"color": "#7a7e83",
-		"selectedColor": "#0faeff",
-		"backgroundColor": "#ffffff",
+		"color": "#7A7E83",
+		"selectedColor": "#007AFF",
+		"borderStyle": "black",
+		"backgroundColor": "#F8F8F8",
+		// "color": "#7a7e83",
+		// "selectedColor": "#0faeff",
+		// "backgroundColor": "#ffffff",
 		"list": [{
 			"pagePath": "pages/main/main",
 			"text": "首页",
@@ -56,8 +64,18 @@
 		}]
 	},
 	"globalStyle": {
+		// "navigationBarTextStyle": "white",
+		// "navigationBarBackgroundColor": "#0faeff",
+		// "backgroundColor": "#fbf9fe",
+		"pageOrientation": "portrait",
 		"navigationBarTextStyle": "white",
-		"navigationBarBackgroundColor": "#0faeff",
-		"backgroundColor": "#fbf9fe"
+		"navigationBarTitleText": "英语回课",
+		"navigationBarBackgroundColor": "#007AFF",
+		"backgroundColor": "#F8F8F8",
+		"backgroundColorTop": "#F4F5F6",
+		"backgroundColorBottom": "#F4F5F6",
+		"mp-360": {
+			"navigationStyle": "custom"
+		}
 	}
 }

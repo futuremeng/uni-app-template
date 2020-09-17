@@ -197,16 +197,25 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-var _default =
+//
+
+var recorderManager = uni.getRecorderManager();
+var innerAudioContext = uni.createInnerAudioContext();
+var limitAudios = 1;
+var limitReviews = 1;
+
+innerAudioContext.autoplay = true;var _default =
+
 {
   data: function data() {
     return {
-      lesson: null };
+      lesson: null,
+      voicePath: '',
+      recording: false };
 
   },
   methods: {
     play: function play(src) {
-      var innerAudioContext = uni.createInnerAudioContext();
       innerAudioContext.autoplay = true;
       innerAudioContext.src = src;
       innerAudioContext.onPlay(function () {
@@ -216,6 +225,17 @@ var _default =
         console.log(res.errMsg);
         console.log(res.errCode);
       });
+
+    },
+    startRecord: function startRecord() {
+      console.log('开始录音');
+      this.recording = true;
+      recorderManager.start();
+    },
+    endRecord: function endRecord() {
+      console.log('录音结束');
+      this.recording = false;
+      recorderManager.stop();
 
     } },
 
@@ -231,6 +251,19 @@ var _default =
       isOpenCount: true,
       isOpenReviews: true };
 
+    var self = this;
+    recorderManager.onStop(function (res) {
+      console.log('recorder stop' + JSON.stringify(res));
+      self.voicePath = res.tempFilePath;
+      if (self.limitAudios === 0 || self.lesson.audios.length < self.limitAudios) {
+        self.lesson.audios.push({
+          src: res.tempFilePath });
+
+      } else {
+
+      }
+
+    });
   } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 

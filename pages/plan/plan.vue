@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<view v-for="plan in plans">
+		<view v-for="(plan,planIndex) in plans" :key="planIndex">
 			
 		</view>
 		

@@ -130,7 +130,12 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni, uniCloud) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;
+
+
+
+
+
 
 
 
@@ -209,11 +214,18 @@ var _vuex = __webpack_require__(/*! vuex */ 8);function ownKeys(object, enumerab
   methods: _objectSpread(_objectSpread({},
   (0, _vuex.mapMutations)(['logout'])), {}, {
     bindLogin: function bindLogin() {
-      uni.navigateTo({
-        url: '../login/login' });
+      if (this.hasLogin) {
+        uni.navigateTo({
+          url: './change/change' });
+
+      } else {
+        uni.navigateTo({
+          url: '../login/login' });
+
+      }
 
     },
-    bindLogout: function bindLogout() {var _this = this;
+    bindLogout: function bindLogout() {
       var loginType = uni.getStorageSync('login_type');
       if (loginType === 'local') {
         this.logout();
@@ -225,47 +237,47 @@ var _vuex = __webpack_require__(/*! vuex */ 8);function ownKeys(object, enumerab
         return;
       }
 
-      uniCloud.callFunction({
-        name: 'user-center',
-        data: {
-          action: 'logout' },
+      // uniCloud.callFunction({
+      // 	name: 'user-center',
+      // 	data: {
+      // 		action: 'logout'
+      // 	},
+      // 	success: (e) => {
 
-        success: function success(e) {
+      // 		console.log('logout success', e);
 
-          console.log('logout success', e);
+      // 		if (e.result.code == 0) {
+      // 			this.logout();
+      // 			uni.removeStorageSync('uniIdToken')
+      // 			uni.removeStorageSync('username')
+      // 			/**
+      // 			 * 如果需要强制登录跳转回登录页面
+      // 			 */
+      // 			if (this.forcedLogin) {
+      // 				uni.reLaunch({
+      // 					url: '../login/login',
+      // 				});
+      // 			}
+      // 		} else {
+      // 			uni.showModal({
+      // 				content: e.result.msg,
+      // 				showCancel: false
+      // 			})
+      // 			console.log('登出失败', e);
+      // 		}
 
-          if (e.result.code == 0) {
-            _this.logout();
-            uni.removeStorageSync('uniIdToken');
-            uni.removeStorageSync('username');
-            /**
-                                                * 如果需要强制登录跳转回登录页面
-                                                */
-            if (_this.forcedLogin) {
-              uni.reLaunch({
-                url: '../login/login' });
-
-            }
-          } else {
-            uni.showModal({
-              content: e.result.msg,
-              showCancel: false });
-
-            console.log('登出失败', e);
-          }
-
-        },
-        fail: function fail(e) {
-          uni.showModal({
-            content: JSON.stringify(e),
-            showCancel: false });
-
-        } });
-
+      // 	},
+      // 	fail(e) {
+      // 		uni.showModal({
+      // 			content: JSON.stringify(e),
+      // 			showCancel: false
+      // 		})
+      // 	}
+      // })
 
 
     } }) };exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"], __webpack_require__(/*! ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/uni-cloud/dist/index.js */ 19)["default"]))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
 

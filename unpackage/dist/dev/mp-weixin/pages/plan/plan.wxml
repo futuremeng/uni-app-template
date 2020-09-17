@@ -1,1 +1,1 @@
-<view><block wx:for="{{plans}}" wx:for-item="plan" wx:for-index="__i0__"><view></view></block></view>
+<view><block wx:for="{{plans}}" wx:for-item="plan" wx:for-index="planIndex" wx:key="planIndex"><view></view></block></view>

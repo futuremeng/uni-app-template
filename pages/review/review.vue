@@ -9,10 +9,11 @@
 			</view>
 			<view v-if="lesson.isCreator">
 				<!-- 当是创建者的时候，则视为老师-->
-				<button type="primary" class="primary">
+				<button type="primary" class="primary" v-if="!recording" @click="startRecord">
 					<text v-if="!lesson.audios||lesson.audios.length===0">录制示范</text>
 					<text v-else>重新录制</text>
 				</button>
+				<button type="primary" class="primary" v-else @click="endRecord">停止录制</button>
 			</view>
 			<view v-else>
 				<!-- 学生模式 -->
@@ -68,15 +69,23 @@
 </template>
 
 <script>
+	const recorderManager = uni.getRecorderManager();
+	const innerAudioContext = uni.createInnerAudioContext();
+	const limitAudios = 1;
+	const limitReviews = 1;
+
+	innerAudioContext.autoplay = true;
+
 	export default {
 		data() {
 			return {
-				lesson: null
+				lesson: null,
+				voicePath: '',
+				recording: false
 			};
 		},
 		methods: {
 			play(src) {
-				const innerAudioContext = uni.createInnerAudioContext();
 				innerAudioContext.autoplay = true;
 				innerAudioContext.src = src;
 				innerAudioContext.onPlay(() => {
@@ -87,7 +96,18 @@
 					console.log(res.errCode);
 				});
 
-			}
+			},
+			startRecord() {
+				console.log('开始录音');
+				this.recording = true;
+				recorderManager.start();
+			},
+			endRecord() {
+				console.log('录音结束');
+				this.recording = false;
+				recorderManager.stop();
+
+			},
 		},
 		onLoad(option) {
 			console.log(option.id)
@@ -101,6 +121,19 @@
 				isOpenCount: true,
 				isOpenReviews: true
 			}
+			let self = this;
+			recorderManager.onStop(function(res) {
+				console.log('recorder stop' + JSON.stringify(res));
+				self.voicePath = res.tempFilePath;
+				if (self.limitAudios === 0 || self.lesson.audios.length < self.limitAudios) {
+					self.lesson.audios.push({
+						src: res.tempFilePath
+					})
+				} else {
+
+				}
+
+			});
 		}
 	}
 </script>
