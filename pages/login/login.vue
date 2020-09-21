@@ -103,187 +103,190 @@
 				 */
 				this.positionTop = uni.getSystemInfoSync().windowHeight - 100;
 			},
-			sendSmsCode() {
-				if(this.codeDuration) {
-					uni.showModal({
-						content: `请在${this.codeDuration}秒后重试`,
-						showCancel: false
-					})
-				}
-				if (!/^1\d{10}$/.test(this.mobile)) {
-					uni.showModal({
-						content: '手机号码填写错误',
-						showCancel: false
-					})
-					return
-				}
-				uniCloud.callFunction({
-					name: 'user-center',
-					data: {
-						action: 'sendSmsCode',
-						params: {
-							mobile: this.mobile
-						}
-					},
-					success: (e) => {
-						if (e.result.code == 0) {
-							uni.showModal({
-								content: '验证码发送成功，请注意查收',
-								showCancel: false
-							})
-							this.codeDuration = 60
-							this.codeInterVal = setInterval(() => {
-								this.codeDuration--
-								if (this.codeDuration === 0) {
-									if (this.codeInterVal) {
-										clearInterval(this.codeInterVal)
-										this.codeInterVal = null
-									}
-								}
-							}, 1000)
-						} else {
-							uni.showModal({
-								content: '验证码发送失败：' + e.result.msg,
-								showCancel: false
-							})
-						}
+			// sendSmsCode() {
+			// 	if(this.codeDuration) {
+			// 		uni.showModal({
+			// 			content: `请在${this.codeDuration}秒后重试`,
+			// 			showCancel: false
+			// 		})
+			// 	}
+			// 	if (!/^1\d{10}$/.test(this.mobile)) {
+			// 		uni.showModal({
+			// 			content: '手机号码填写错误',
+			// 			showCancel: false
+			// 		})
+			// 		return
+			// 	}
+			// 	uniCloud.callFunction({
+			// 		name: 'user-center',
+			// 		data: {
+			// 			action: 'sendSmsCode',
+			// 			params: {
+			// 				mobile: this.mobile
+			// 			}
+			// 		},
+			// 		success: (e) => {
+			// 			if (e.result.code == 0) {
+			// 				uni.showModal({
+			// 					content: '验证码发送成功，请注意查收',
+			// 					showCancel: false
+			// 				})
+			// 				this.codeDuration = 60
+			// 				this.codeInterVal = setInterval(() => {
+			// 					this.codeDuration--
+			// 					if (this.codeDuration === 0) {
+			// 						if (this.codeInterVal) {
+			// 							clearInterval(this.codeInterVal)
+			// 							this.codeInterVal = null
+			// 						}
+			// 					}
+			// 				}, 1000)
+			// 			} else {
+			// 				uni.showModal({
+			// 					content: '验证码发送失败：' + e.result.msg,
+			// 					showCancel: false
+			// 				})
+			// 			}
 
-					},
-					fail(e) {
-						uni.showModal({
-							content: '验证码发送失败',
-							showCancel: false
-						})
-					}
-				})
-			},
-			loginByPwd() {
-				/**
-				 * 客户端对账号信息进行一些必要的校验。
-				 * 实际开发中，根据业务需要进行处理，这里仅做示例。
-				 */
-				if (this.username.length < 3) {
-					uni.showToast({
-						icon: 'none',
-						title: '账号最短为 3 个字符'
-					});
-					return;
-				}
-				if (this.password.length < 6) {
-					uni.showToast({
-						icon: 'none',
-						title: '密码最短为 6 个字符'
-					});
-					return;
-				}
-				const data = {
-					username: this.username,
-					password: this.password
-				};
-				let _self = this;
+			// 		},
+			// 		fail(e) {
+			// 			uni.showModal({
+			// 				content: '验证码发送失败',
+			// 				showCancel: false
+			// 			})
+			// 		}
+			// 	})
+			// },
+			// loginByPwd() {
+			// 	/**
+			// 	 * 客户端对账号信息进行一些必要的校验。
+			// 	 * 实际开发中，根据业务需要进行处理，这里仅做示例。
+			// 	 */
+			// 	if (this.username.length < 3) {
+			// 		uni.showToast({
+			// 			icon: 'none',
+			// 			title: '账号最短为 3 个字符'
+			// 		});
+			// 		return;
+			// 	}
+			// 	if (this.password.length < 6) {
+			// 		uni.showToast({
+			// 			icon: 'none',
+			// 			title: '密码最短为 6 个字符'
+			// 		});
+			// 		return;
+			// 	}
+			// 	const data = {
+			// 		username: this.username,
+			// 		password: this.password
+			// 	};
+			// 	let _self = this;
 
-				uniCloud.callFunction({
-					name: 'user-center',
-					data: {
-						action: 'login',
-						params: data
-					},
-					success: (e) => {
+			// 	uniCloud.callFunction({
+			// 		name: 'user-center',
+			// 		data: {
+			// 			action: 'login',
+			// 			params: data
+			// 		},
+			// 		success: (e) => {
 
-						console.log('login success', e);
+			// 			console.log('login success', e);
 
-						if (e.result.code == 0) {
-							uni.setStorageSync('uniIdToken', e.result.token)
-							uni.setStorageSync('username', e.result.username)
-							uni.setStorageSync('login_type', 'online')
-							_self.toMain(_self.username);
-						} else {
-							uni.showModal({
-								content: e.result.msg,
-								showCancel: false
-							})
-							console.log('登录失败', e);
-						}
+			// 			if (e.result.code == 0) {
+			// 				uni.setStorageSync('uniIdToken', e.result.token)
+			// 				uni.setStorageSync('username', e.result.username)
+			// 				uni.setStorageSync('login_type', 'online')
+			// 				_self.toMain(_self.username);
+			// 			} else {
+			// 				uni.showModal({
+			// 					content: e.result.msg,
+			// 					showCancel: false
+			// 				})
+			// 				console.log('登录失败', e);
+			// 			}
 
-					},
-					fail(e) {
-						uni.showModal({
-							content: JSON.stringify(e),
-							showCancel: false
-						})
-					}
-				})
-			},
-			loginBySms() {
-				if (!/^1\d{10}$/.test(this.mobile)) {
-					uni.showModal({
-						content: '手机号码填写错误',
-						showCancel: false
-					})
-					return
-				}
-				if (!/^\d{6}$/.test(this.code)) {
-					uni.showModal({
-						title: '验证码为6位纯数字',
-						showCancel: false
-					});
-					return;
-				}
-				let _self = this;
+			// 		},
+			// 		fail(e) {
+			// 			uni.showModal({
+			// 				content: JSON.stringify(e),
+			// 				showCancel: false
+			// 			})
+			// 		}
+			// 	})
+			// },
+			// loginBySms() {
+			// 	if (!/^1\d{10}$/.test(this.mobile)) {
+			// 		uni.showModal({
+			// 			content: '手机号码填写错误',
+			// 			showCancel: false
+			// 		})
+			// 		return
+			// 	}
+			// 	if (!/^\d{6}$/.test(this.code)) {
+			// 		uni.showModal({
+			// 			title: '验证码为6位纯数字',
+			// 			showCancel: false
+			// 		});
+			// 		return;
+			// 	}
+			// 	let _self = this;
 
-				uniCloud.callFunction({
-					name: 'user-center',
-					data: {
-						action: 'loginBySms',
-						params: {
-							mobile: this.mobile,
-							code: this.code
-						}
-					},
-					success: (e) => {
+			// 	uniCloud.callFunction({
+			// 		name: 'user-center',
+			// 		data: {
+			// 			action: 'loginBySms',
+			// 			params: {
+			// 				mobile: this.mobile,
+			// 				code: this.code
+			// 			}
+			// 		},
+			// 		success: (e) => {
 
-						console.log('login success', e);
+			// 			console.log('login success', e);
 
-						if (e.result.code == 0) {
-							const username = e.result.username || '新用户'
-							uni.setStorageSync('uniIdToken', e.result.token)
-							uni.setStorageSync('username', username)
-							uni.setStorageSync('login_type', 'online')
-							_self.toMain(username);
-						} else {
-							uni.showModal({
-								content: e.result.msg,
-								showCancel: false
-							})
-							console.log('登录失败', e);
-						}
+			// 			if (e.result.code == 0) {
+			// 				const username = e.result.username || '新用户'
+			// 				uni.setStorageSync('uniIdToken', e.result.token)
+			// 				uni.setStorageSync('username', username)
+			// 				uni.setStorageSync('login_type', 'online')
+			// 				_self.toMain(username);
+			// 			} else {
+			// 				uni.showModal({
+			// 					content: e.result.msg,
+			// 					showCancel: false
+			// 				})
+			// 				console.log('登录失败', e);
+			// 			}
 
-					},
-					fail(e) {
-						uni.showModal({
-							content: JSON.stringify(e),
-							showCancel: false
-						})
-					}
-				})
-			},
-			bindLogin() {
-				switch (this.loginType) {
-					case 0:
-						this.loginByPwd()
-						break;
-					case 1:
-						this.loginBySms()
-						break;
-					default:
-						break;
-				}
-			},
+			// 		},
+			// 		fail(e) {
+			// 			uni.showModal({
+			// 				content: JSON.stringify(e),
+			// 				showCancel: false
+			// 			})
+			// 		}
+			// 	})
+			// },
+			// bindLogin() {
+			// 	switch (this.loginType) {
+			// 		case 0:
+			// 			this.loginByPwd()
+			// 			break;
+			// 		case 1:
+			// 			this.loginBySms()
+			// 			break;
+			// 		default:
+			// 			break;
+			// 	}
+			// },
 			oauth(value) {
-				console.log('三方登录只演示登录api能力，暂未关联云端数据');
+				// console.log('三方登录只演示登录api能力，暂未关联云端数据');
+				console.log('login by ', value);
 				uni.login({
 					provider: value,
 					success: (res) => {
+						console.log('res:', res);
+						// {errMsg: "login:ok",code: "091Tvgll2QppF54NI5ml27XtSs1TvglM"}
 						uni.getUserInfo({
 							provider: value,
 							success: (infoRes) => {
@@ -291,12 +294,21 @@
 								 * 实际开发中，获取用户信息后，需要将信息上报至服务端。
 								 * 服务端可以用 userInfo.openId 作为用户的唯一标识新增或绑定用户信息。
 								 */
+								console.log('code:', res.code);
+								console.log('infoRes', infoRes);
+								this.$http.post('http://api.local.ecenc.com/auth/code', {
+									code: res.code
+								}).then(resApi => {
+									console.log(resApi)
+								}).catch(err => {
+									console.log(err)
+								})
 								this.loginLocal(infoRes.userInfo.nickName);
 							},
 							fail() {
 								uni.showToast({
 									icon: 'none',
-									title: '登陆失败'
+									title: '登录失败'
 								});
 							}
 						});
@@ -309,13 +321,14 @@
 			getUserInfo({
 				detail
 			}) {
-				console.log('三方登录只演示登录api能力，暂未关联云端数据');
+				// console.log('三方登录只演示登录api能力，暂未关联云端数据');
 				if (detail.userInfo) {
+					console.log(detail);
 					this.loginLocal(detail.userInfo.nickName);
 				} else {
 					uni.showToast({
 						icon: 'none',
-						title: '登陆失败'
+						title: '登录失败'
 					});
 				}
 			},

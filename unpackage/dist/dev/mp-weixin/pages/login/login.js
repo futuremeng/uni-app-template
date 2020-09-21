@@ -130,7 +130,7 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni, uniCloud) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;
 
 
 
@@ -178,7 +178,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var _service = _interopRequireDefault(__webpack_require__(/*! ../../service.js */ 29));
-var _vuex = __webpack_require__(/*! vuex */ 8);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}var mInput = function mInput() {__webpack_require__.e(/*! require.ensure | components/m-input */ "components/m-input").then((function () {return resolve(__webpack_require__(/*! ../../components/m-input.vue */ 52));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var _default =
+var _vuex = __webpack_require__(/*! vuex */ 8);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}var mInput = function mInput() {__webpack_require__.e(/*! require.ensure | components/m-input */ "components/m-input").then((function () {return resolve(__webpack_require__(/*! ../../components/m-input.vue */ 72));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var _default =
 
 
 
@@ -235,187 +235,190 @@ var _vuex = __webpack_require__(/*! vuex */ 8);function _interopRequireDefault(o
                                             */
       this.positionTop = uni.getSystemInfoSync().windowHeight - 100;
     },
-    sendSmsCode: function sendSmsCode() {var _this2 = this;
-      if (this.codeDuration) {
-        uni.showModal({
-          content: "\u8BF7\u5728".concat(this.codeDuration, "\u79D2\u540E\u91CD\u8BD5"),
-          showCancel: false });
+    // sendSmsCode() {
+    // 	if(this.codeDuration) {
+    // 		uni.showModal({
+    // 			content: `请在${this.codeDuration}秒后重试`,
+    // 			showCancel: false
+    // 		})
+    // 	}
+    // 	if (!/^1\d{10}$/.test(this.mobile)) {
+    // 		uni.showModal({
+    // 			content: '手机号码填写错误',
+    // 			showCancel: false
+    // 		})
+    // 		return
+    // 	}
+    // 	uniCloud.callFunction({
+    // 		name: 'user-center',
+    // 		data: {
+    // 			action: 'sendSmsCode',
+    // 			params: {
+    // 				mobile: this.mobile
+    // 			}
+    // 		},
+    // 		success: (e) => {
+    // 			if (e.result.code == 0) {
+    // 				uni.showModal({
+    // 					content: '验证码发送成功，请注意查收',
+    // 					showCancel: false
+    // 				})
+    // 				this.codeDuration = 60
+    // 				this.codeInterVal = setInterval(() => {
+    // 					this.codeDuration--
+    // 					if (this.codeDuration === 0) {
+    // 						if (this.codeInterVal) {
+    // 							clearInterval(this.codeInterVal)
+    // 							this.codeInterVal = null
+    // 						}
+    // 					}
+    // 				}, 1000)
+    // 			} else {
+    // 				uni.showModal({
+    // 					content: '验证码发送失败：' + e.result.msg,
+    // 					showCancel: false
+    // 				})
+    // 			}
 
-      }
-      if (!/^1\d{10}$/.test(this.mobile)) {
-        uni.showModal({
-          content: '手机号码填写错误',
-          showCancel: false });
+    // 		},
+    // 		fail(e) {
+    // 			uni.showModal({
+    // 				content: '验证码发送失败',
+    // 				showCancel: false
+    // 			})
+    // 		}
+    // 	})
+    // },
+    // loginByPwd() {
+    // 	/**
+    // 	 * 客户端对账号信息进行一些必要的校验。
+    // 	 * 实际开发中，根据业务需要进行处理，这里仅做示例。
+    // 	 */
+    // 	if (this.username.length < 3) {
+    // 		uni.showToast({
+    // 			icon: 'none',
+    // 			title: '账号最短为 3 个字符'
+    // 		});
+    // 		return;
+    // 	}
+    // 	if (this.password.length < 6) {
+    // 		uni.showToast({
+    // 			icon: 'none',
+    // 			title: '密码最短为 6 个字符'
+    // 		});
+    // 		return;
+    // 	}
+    // 	const data = {
+    // 		username: this.username,
+    // 		password: this.password
+    // 	};
+    // 	let _self = this;
 
-        return;
-      }
-      uniCloud.callFunction({
-        name: 'user-center',
-        data: {
-          action: 'sendSmsCode',
-          params: {
-            mobile: this.mobile } },
+    // 	uniCloud.callFunction({
+    // 		name: 'user-center',
+    // 		data: {
+    // 			action: 'login',
+    // 			params: data
+    // 		},
+    // 		success: (e) => {
 
+    // 			console.log('login success', e);
 
-        success: function success(e) {
-          if (e.result.code == 0) {
-            uni.showModal({
-              content: '验证码发送成功，请注意查收',
-              showCancel: false });
+    // 			if (e.result.code == 0) {
+    // 				uni.setStorageSync('uniIdToken', e.result.token)
+    // 				uni.setStorageSync('username', e.result.username)
+    // 				uni.setStorageSync('login_type', 'online')
+    // 				_self.toMain(_self.username);
+    // 			} else {
+    // 				uni.showModal({
+    // 					content: e.result.msg,
+    // 					showCancel: false
+    // 				})
+    // 				console.log('登录失败', e);
+    // 			}
 
-            _this2.codeDuration = 60;
-            _this2.codeInterVal = setInterval(function () {
-              _this2.codeDuration--;
-              if (_this2.codeDuration === 0) {
-                if (_this2.codeInterVal) {
-                  clearInterval(_this2.codeInterVal);
-                  _this2.codeInterVal = null;
-                }
-              }
-            }, 1000);
-          } else {
-            uni.showModal({
-              content: '验证码发送失败：' + e.result.msg,
-              showCancel: false });
+    // 		},
+    // 		fail(e) {
+    // 			uni.showModal({
+    // 				content: JSON.stringify(e),
+    // 				showCancel: false
+    // 			})
+    // 		}
+    // 	})
+    // },
+    // loginBySms() {
+    // 	if (!/^1\d{10}$/.test(this.mobile)) {
+    // 		uni.showModal({
+    // 			content: '手机号码填写错误',
+    // 			showCancel: false
+    // 		})
+    // 		return
+    // 	}
+    // 	if (!/^\d{6}$/.test(this.code)) {
+    // 		uni.showModal({
+    // 			title: '验证码为6位纯数字',
+    // 			showCancel: false
+    // 		});
+    // 		return;
+    // 	}
+    // 	let _self = this;
 
-          }
+    // 	uniCloud.callFunction({
+    // 		name: 'user-center',
+    // 		data: {
+    // 			action: 'loginBySms',
+    // 			params: {
+    // 				mobile: this.mobile,
+    // 				code: this.code
+    // 			}
+    // 		},
+    // 		success: (e) => {
 
-        },
-        fail: function fail(e) {
-          uni.showModal({
-            content: '验证码发送失败',
-            showCancel: false });
+    // 			console.log('login success', e);
 
-        } });
+    // 			if (e.result.code == 0) {
+    // 				const username = e.result.username || '新用户'
+    // 				uni.setStorageSync('uniIdToken', e.result.token)
+    // 				uni.setStorageSync('username', username)
+    // 				uni.setStorageSync('login_type', 'online')
+    // 				_self.toMain(username);
+    // 			} else {
+    // 				uni.showModal({
+    // 					content: e.result.msg,
+    // 					showCancel: false
+    // 				})
+    // 				console.log('登录失败', e);
+    // 			}
 
-    },
-    loginByPwd: function loginByPwd() {
-      /**
-                                        * 客户端对账号信息进行一些必要的校验。
-                                        * 实际开发中，根据业务需要进行处理，这里仅做示例。
-                                        */
-      if (this.username.length < 3) {
-        uni.showToast({
-          icon: 'none',
-          title: '账号最短为 3 个字符' });
-
-        return;
-      }
-      if (this.password.length < 6) {
-        uni.showToast({
-          icon: 'none',
-          title: '密码最短为 6 个字符' });
-
-        return;
-      }
-      var data = {
-        username: this.username,
-        password: this.password };
-
-      var _self = this;
-
-      uniCloud.callFunction({
-        name: 'user-center',
-        data: {
-          action: 'login',
-          params: data },
-
-        success: function success(e) {
-
-          console.log('login success', e);
-
-          if (e.result.code == 0) {
-            uni.setStorageSync('uniIdToken', e.result.token);
-            uni.setStorageSync('username', e.result.username);
-            uni.setStorageSync('login_type', 'online');
-            _self.toMain(_self.username);
-          } else {
-            uni.showModal({
-              content: e.result.msg,
-              showCancel: false });
-
-            console.log('登录失败', e);
-          }
-
-        },
-        fail: function fail(e) {
-          uni.showModal({
-            content: JSON.stringify(e),
-            showCancel: false });
-
-        } });
-
-    },
-    loginBySms: function loginBySms() {
-      if (!/^1\d{10}$/.test(this.mobile)) {
-        uni.showModal({
-          content: '手机号码填写错误',
-          showCancel: false });
-
-        return;
-      }
-      if (!/^\d{6}$/.test(this.code)) {
-        uni.showModal({
-          title: '验证码为6位纯数字',
-          showCancel: false });
-
-        return;
-      }
-      var _self = this;
-
-      uniCloud.callFunction({
-        name: 'user-center',
-        data: {
-          action: 'loginBySms',
-          params: {
-            mobile: this.mobile,
-            code: this.code } },
-
-
-        success: function success(e) {
-
-          console.log('login success', e);
-
-          if (e.result.code == 0) {
-            var username = e.result.username || '新用户';
-            uni.setStorageSync('uniIdToken', e.result.token);
-            uni.setStorageSync('username', username);
-            uni.setStorageSync('login_type', 'online');
-            _self.toMain(username);
-          } else {
-            uni.showModal({
-              content: e.result.msg,
-              showCancel: false });
-
-            console.log('登录失败', e);
-          }
-
-        },
-        fail: function fail(e) {
-          uni.showModal({
-            content: JSON.stringify(e),
-            showCancel: false });
-
-        } });
-
-    },
-    bindLogin: function bindLogin() {
-      switch (this.loginType) {
-        case 0:
-          this.loginByPwd();
-          break;
-        case 1:
-          this.loginBySms();
-          break;
-        default:
-          break;}
-
-    },
-    oauth: function oauth(value) {var _this3 = this;
-      console.log('三方登录只演示登录api能力，暂未关联云端数据');
+    // 		},
+    // 		fail(e) {
+    // 			uni.showModal({
+    // 				content: JSON.stringify(e),
+    // 				showCancel: false
+    // 			})
+    // 		}
+    // 	})
+    // },
+    // bindLogin() {
+    // 	switch (this.loginType) {
+    // 		case 0:
+    // 			this.loginByPwd()
+    // 			break;
+    // 		case 1:
+    // 			this.loginBySms()
+    // 			break;
+    // 		default:
+    // 			break;
+    // 	}
+    // },
+    oauth: function oauth(value) {var _this2 = this;
+      // console.log('三方登录只演示登录api能力，暂未关联云端数据');
+      console.log('login by ', value);
       uni.login({
         provider: value,
         success: function success(res) {
+          console.log('res:', res);
+          // {errMsg: "login:ok",code: "091Tvgll2QppF54NI5ml27XtSs1TvglM"}
           uni.getUserInfo({
             provider: value,
             success: function success(infoRes) {
@@ -423,12 +426,21 @@ var _vuex = __webpack_require__(/*! vuex */ 8);function _interopRequireDefault(o
                                                  * 实际开发中，获取用户信息后，需要将信息上报至服务端。
                                                  * 服务端可以用 userInfo.openId 作为用户的唯一标识新增或绑定用户信息。
                                                  */
-              _this3.loginLocal(infoRes.userInfo.nickName);
+              console.log('code:', res.code);
+              console.log('infoRes', infoRes);
+              _this2.$http.post('http://api.local.ecenc.com/auth/code', {
+                code: res.code }).
+              then(function (resApi) {
+                console.log(resApi);
+              }).catch(function (err) {
+                console.log(err);
+              });
+              _this2.loginLocal(infoRes.userInfo.nickName);
             },
             fail: function fail() {
               uni.showToast({
                 icon: 'none',
-                title: '登陆失败' });
+                title: '登录失败' });
 
             } });
 
@@ -441,13 +453,14 @@ var _vuex = __webpack_require__(/*! vuex */ 8);function _interopRequireDefault(o
     getUserInfo: function getUserInfo(_ref)
 
     {var detail = _ref.detail;
-      console.log('三方登录只演示登录api能力，暂未关联云端数据');
+      // console.log('三方登录只演示登录api能力，暂未关联云端数据');
       if (detail.userInfo) {
+        console.log(detail);
         this.loginLocal(detail.userInfo.nickName);
       } else {
         uni.showToast({
           icon: 'none',
-          title: '登陆失败' });
+          title: '登录失败' });
 
       }
     },
@@ -479,7 +492,7 @@ var _vuex = __webpack_require__(/*! vuex */ 8);function _interopRequireDefault(o
     this.isDevtools = uni.getSystemInfoSync().platform === 'devtools';
 
   } };exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"], __webpack_require__(/*! ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/uni-cloud/dist/index.js */ 19)["default"]))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
 
