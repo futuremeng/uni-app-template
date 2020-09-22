@@ -276,7 +276,11 @@ var _vuex = __webpack_require__(/*! vuex */ 8);function ownKeys(object, enumerab
       // })
 
 
-    } }) };exports.default = _default;
+    } }),
+
+  onReady: function onReady() {
+    this.avatarUrl = uni.getStorageSync('avatarUrl');
+  } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),

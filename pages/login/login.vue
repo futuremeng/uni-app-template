@@ -33,6 +33,10 @@
 			<text>|</text>
 			<navigator url="../pwd/pwd">忘记密码</navigator>
 		</view> -->
+		<view>
+			<view>隐私声明：“英语回课”不获取个人信息，仅使用微信openid作为区分用户的依据。</view>
+			<view>请点击下方按钮授权</view>
+		</view>
 		<view class="oauth-row" v-if="hasProvider" v-bind:style="{top: positionTop + 'px'}">
 			<view class="oauth-image" v-for="provider in providerList" :key="provider.value">
 				<image :src="provider.image" @tap="oauth(provider.value)"></image>
@@ -284,34 +288,57 @@
 				console.log('login by ', value);
 				uni.login({
 					provider: value,
-					success: (res) => {
-						console.log('res:', res);
+					success: (wxRes) => {
+						console.log('res:', wxRes);
 						// {errMsg: "login:ok",code: "091Tvgll2QppF54NI5ml27XtSs1TvglM"}
-						uni.getUserInfo({
-							provider: value,
-							success: (infoRes) => {
-								/**
-								 * 实际开发中，获取用户信息后，需要将信息上报至服务端。
-								 * 服务端可以用 userInfo.openId 作为用户的唯一标识新增或绑定用户信息。
-								 */
-								console.log('code:', res.code);
-								console.log('infoRes', infoRes);
-								this.$http.post('http://api.local.ecenc.com/auth/code', {
-									code: res.code
-								}).then(resApi => {
-									console.log(resApi)
-								}).catch(err => {
-									console.log(err)
-								})
-								this.loginLocal(infoRes.userInfo.nickName);
+						console.log('code:', wxRes.code);
+						this.$http.post('auth/code', {
+							code: wxRes.code
+						}, {
+							custom: {
+								auth: false
 							},
-							fail() {
-								uni.showToast({
-									icon: 'none',
-									title: '登录失败'
-								});
-							}
-						});
+						}).then(codeRes => {
+							console.log('codeRes',codeRes)
+							
+							uni.getUserInfo({
+								provider: value,
+								success: (infoRes) => {
+									/**
+									 * 实际开发中，获取用户信息后，需要将信息上报至服务端。
+									 * 服务端可以用 userInfo.openId 作为用户的唯一标识新增或绑定用户信息。
+									 */
+									console.log('infoRes', infoRes);
+									this.$http.post('auth', {
+										iv: infoRes.iv,
+										encryptedData: infoRes.encryptedData,
+										nickName: infoRes.userInfo.nickName,
+										avatarUrl: infoRes.userInfo.avatarUrl
+									}, {
+										header: {
+											Authorization: codeRes.data.data.token
+										},
+										/* 会与全局header合并，如有同名属性，局部覆盖全局 */
+									}).then(authRes => {
+										console.log('authRes',authRes)
+										uni.setStorageSync('token', authRes.data.data.token)
+										this.loginLocal(authRes.data.data.user);
+									}).catch(authErr => {
+										console.log(authErr)
+									})
+
+								},
+								fail() {
+									uni.showToast({
+										icon: 'none',
+										title: '登录失败'
+									});
+								}
+							});
+						}).catch(authCodeErr => {
+							console.log(authCodeErr)
+						})
+
 					},
 					fail: (err) => {
 						console.error('授权登录失败：' + JSON.stringify(err));
@@ -332,10 +359,11 @@
 					});
 				}
 			},
-			loginLocal(nickName) {
+			loginLocal(user) {
 				uni.setStorageSync('login_type', 'local')
-				uni.setStorageSync('username', nickName)
-				this.toMain(nickName);
+				uni.setStorageSync('username', user.nickName)
+				uni.setStorageSync('avatarUrl', user.avatarUrl)
+				this.toMain(user.nickName);
 			},
 			toMain(userName) {
 				this.login(userName);

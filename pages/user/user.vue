@@ -82,16 +82,16 @@
 		methods: {
 			...mapMutations(['logout']),
 			bindLogin() {
-				if(this.hasLogin){
+				if (this.hasLogin) {
 					uni.navigateTo({
 						url: './change/change',
 					});
-				}else{
+				} else {
 					uni.navigateTo({
 						url: '../login/login',
 					});
 				}
-				
+
 			},
 			bindLogout() {
 				const loginType = uni.getStorageSync('login_type')
@@ -145,6 +145,9 @@
 
 
 			},
+		},
+		onReady() {
+			this.avatarUrl = uni.getStorageSync('avatarUrl')
 		}
 	}
 </script>

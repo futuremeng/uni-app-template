@@ -177,6 +177,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+
+
+
 var _service = _interopRequireDefault(__webpack_require__(/*! ../../service.js */ 29));
 var _vuex = __webpack_require__(/*! vuex */ 8);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}var mInput = function mInput() {__webpack_require__.e(/*! require.ensure | components/m-input */ "components/m-input").then((function () {return resolve(__webpack_require__(/*! ../../components/m-input.vue */ 72));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var _default =
 
@@ -416,33 +420,56 @@ var _vuex = __webpack_require__(/*! vuex */ 8);function _interopRequireDefault(o
       console.log('login by ', value);
       uni.login({
         provider: value,
-        success: function success(res) {
-          console.log('res:', res);
+        success: function success(wxRes) {
+          console.log('res:', wxRes);
           // {errMsg: "login:ok",code: "091Tvgll2QppF54NI5ml27XtSs1TvglM"}
-          uni.getUserInfo({
-            provider: value,
-            success: function success(infoRes) {
-              /**
-                                                 * 实际开发中，获取用户信息后，需要将信息上报至服务端。
-                                                 * 服务端可以用 userInfo.openId 作为用户的唯一标识新增或绑定用户信息。
-                                                 */
-              console.log('code:', res.code);
-              console.log('infoRes', infoRes);
-              _this2.$http.post('http://api.local.ecenc.com/auth/code', {
-                code: res.code }).
-              then(function (resApi) {
-                console.log(resApi);
-              }).catch(function (err) {
-                console.log(err);
-              });
-              _this2.loginLocal(infoRes.userInfo.nickName);
-            },
-            fail: function fail() {
-              uni.showToast({
-                icon: 'none',
-                title: '登录失败' });
+          console.log('code:', wxRes.code);
+          _this2.$http.post('auth/code', {
+            code: wxRes.code },
+          {
+            custom: {
+              auth: false } }).
 
-            } });
+          then(function (codeRes) {
+            console.log('codeRes', codeRes);
+
+            uni.getUserInfo({
+              provider: value,
+              success: function success(infoRes) {
+                /**
+                                                   * 实际开发中，获取用户信息后，需要将信息上报至服务端。
+                                                   * 服务端可以用 userInfo.openId 作为用户的唯一标识新增或绑定用户信息。
+                                                   */
+                console.log('infoRes', infoRes);
+                _this2.$http.post('auth', {
+                  iv: infoRes.iv,
+                  encryptedData: infoRes.encryptedData,
+                  nickName: infoRes.userInfo.nickName,
+                  avatarUrl: infoRes.userInfo.avatarUrl },
+                {
+                  header: {
+                    Authorization: codeRes.data.data.token }
+
+                  /* 会与全局header合并，如有同名属性，局部覆盖全局 */ }).
+                then(function (authRes) {
+                  console.log('authRes', authRes);
+                  uni.setStorageSync('token', authRes.data.data.token);
+                  _this2.loginLocal(authRes.data.data.user);
+                }).catch(function (authErr) {
+                  console.log(authErr);
+                });
+
+              },
+              fail: function fail() {
+                uni.showToast({
+                  icon: 'none',
+                  title: '登录失败' });
+
+              } });
+
+          }).catch(function (authCodeErr) {
+            console.log(authCodeErr);
+          });
 
         },
         fail: function fail(err) {
@@ -464,10 +491,11 @@ var _vuex = __webpack_require__(/*! vuex */ 8);function _interopRequireDefault(o
 
       }
     },
-    loginLocal: function loginLocal(nickName) {
+    loginLocal: function loginLocal(user) {
       uni.setStorageSync('login_type', 'local');
-      uni.setStorageSync('username', nickName);
-      this.toMain(nickName);
+      uni.setStorageSync('username', user.nickName);
+      uni.setStorageSync('avatarUrl', user.avatarUrl);
+      this.toMain(user.nickName);
     },
     toMain: function toMain(userName) {
       this.login(userName);
