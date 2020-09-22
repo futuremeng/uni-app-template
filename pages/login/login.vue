@@ -34,6 +34,25 @@
 			<navigator url="../pwd/pwd">忘记密码</navigator>
 		</view> -->
 		<view>
+			<!-- #ifdef MP-WEIXIN -->
+			<view v-if="isCanUse">
+				<view>
+					<view class='header'>
+						<image src='../../static/img/wx_login.png'></image>
+					</view>
+					<view class='content'>
+						<view>申请获取以下权限</view>
+						<text>获得你的公开信息(昵称，头像、地区等)</text>
+					</view>
+
+					<button class='bottom' type='primary' open-type="getUserInfo" withCredentials="true" lang="zh_CN" @getuserinfo="wxGetUserInfo">
+						授权登录
+					</button>
+				</view>
+			</view>
+			<!-- #endif -->
+		</view>
+		<view>
 			<view>隐私声明：“英语回课”不获取个人信息，仅使用微信openid作为区分用户的依据。</view>
 			<view>请点击下方按钮授权</view>
 		</view>
@@ -41,7 +60,7 @@
 			<view class="oauth-image" v-for="provider in providerList" :key="provider.value">
 				<image :src="provider.image" @tap="oauth(provider.value)"></image>
 				<!-- #ifdef MP-WEIXIN -->
-				<button v-if="!isDevtools" open-type="getUserInfo" @getuserinfo="getUserInfo"></button>
+				<button v-if="!isDevtools" open-type="getUserInfo" @getuserinfo="wxGetUserInfo"></button>
 				<!-- #endif -->
 			</view>
 		</view>
@@ -62,6 +81,7 @@
 		},
 		data() {
 			return {
+				isCanUse: uni.getStorageSync('isCanUse') || true, //默认为true
 				loginType: 0,
 				loginTypeList: ['密码登录', '免密登录'],
 				mobile: '',
@@ -107,6 +127,112 @@
 				 */
 				this.positionTop = uni.getSystemInfoSync().windowHeight - 100;
 			},
+			oauth(provider) {
+				console.log('login by ', provider);
+				uni.showLoading({
+					title: '登录中...'
+				});
+				let _this = this;
+				uni.login({
+					provider: provider,
+					success: (oauthRes) => {
+						console.log('res:', oauthRes);
+						// {errMsg: "login:ok",code: "091Tvgll2QppF54NI5ml27XtSs1TvglM"}
+						console.log('code:', oauthRes.code);
+						_this.$http.post('auth/code', {
+							code: oauthRes.code
+						}, {
+							custom: {
+								auth: false
+							},
+						}).then(codeRes => {
+							console.log('codeRes', codeRes)
+							uni.setStorageSync('token', codeRes.data.data.token)
+							_this.updateUserInfo(provider);
+							uni.hideLoading();
+						}).catch(authCodeErr => {
+							console.log(authCodeErr)
+						})
+
+					},
+					fail: (err) => {
+						console.error('授权登录失败：' + JSON.stringify(err));
+						uni.hideLoading();
+					}
+				});
+			},
+			//第一授权获取用户信息===》按钮触发
+			wxGetUserInfo({
+				detail
+			}) {
+				if (detail.userInfo) {
+					console.log(detail);
+					try {
+						uni.setStorageSync('isCanUse', false); //记录是否第一次授权  false:表示不是第一次授权
+						this.oauth('weixin');
+					} catch (e) {
+
+					}
+				} else {
+					uni.showToast({
+						icon: 'none',
+						title: '登录失败'
+					});
+				}
+			},
+			loginLocal(user) {
+				uni.setStorageSync('login_type', 'local')
+				uni.setStorageSync('username', user.nickName)
+				uni.setStorageSync('avatarUrl', user.avatarUrl)
+				this.toMain(user.nickName);
+			},
+			toMain(userName) {
+				this.login(userName);
+				/**
+				 * 强制登录时使用reLaunch方式跳转过来
+				 * 返回首页也使用reLaunch方式
+				 */
+				if (this.forcedLogin) {
+					uni.reLaunch({
+						url: '../main/main',
+					});
+				} else {
+					uni.navigateBack();
+				}
+
+			},
+			//获取最新的用户信息并向后台更新信息，（同时更新token，因后台更新用户信息时更新了token）
+			updateUserInfo(provider) {
+				let _this = this;
+				uni.getUserInfo({
+					provider: provider,
+					success: (infoRes) => {
+						/**
+						 * 实际开发中，获取用户信息后，需要将信息上报至服务端。
+						 */
+						console.log('infoRes', infoRes);
+						_this.$http.post('auth', {
+							iv: infoRes.iv,
+							encryptedData: infoRes.encryptedData,
+							nickName: infoRes.userInfo.nickName,
+							avatarUrl: infoRes.userInfo.avatarUrl
+						}).then(authRes => {
+							console.log('authRes', authRes)
+							uni.setStorageSync('token', authRes.data.data.token)
+							_this.loginLocal(authRes.data.data.user);
+						}).catch(authErr => {
+							console.log(authErr)
+						})
+
+					},
+					fail() {
+						uni.showToast({
+							icon: 'none',
+							title: '登录失败'
+						});
+					}
+				});
+			},
 			// sendSmsCode() {
 			// 	if(this.codeDuration) {
 			// 		uni.showModal({
@@ -151,7 +277,7 @@
 			// 					showCancel: false
 			// 				})
 			// 			}
-
+			
 			// 		},
 			// 		fail(e) {
 			// 			uni.showModal({
@@ -185,7 +311,7 @@
 			// 		password: this.password
 			// 	};
 			// 	let _self = this;
-
+			
 			// 	uniCloud.callFunction({
 			// 		name: 'user-center',
 			// 		data: {
@@ -193,9 +319,9 @@
 			// 			params: data
 			// 		},
 			// 		success: (e) => {
-
+			
 			// 			console.log('login success', e);
-
+			
 			// 			if (e.result.code == 0) {
 			// 				uni.setStorageSync('uniIdToken', e.result.token)
 			// 				uni.setStorageSync('username', e.result.username)
@@ -208,7 +334,7 @@
 			// 				})
 			// 				console.log('登录失败', e);
 			// 			}
-
+			
 			// 		},
 			// 		fail(e) {
 			// 			uni.showModal({
@@ -234,7 +360,7 @@
 			// 		return;
 			// 	}
 			// 	let _self = this;
-
+			
 			// 	uniCloud.callFunction({
 			// 		name: 'user-center',
 			// 		data: {
@@ -245,9 +371,9 @@
 			// 			}
 			// 		},
 			// 		success: (e) => {
-
+			
 			// 			console.log('login success', e);
-
+			
 			// 			if (e.result.code == 0) {
 			// 				const username = e.result.username || '新用户'
 			// 				uni.setStorageSync('uniIdToken', e.result.token)
@@ -261,7 +387,7 @@
 			// 				})
 			// 				console.log('登录失败', e);
 			// 			}
-
+			
 			// 		},
 			// 		fail(e) {
 			// 			uni.showModal({
@@ -283,111 +409,21 @@
 			// 			break;
 			// 	}
 			// },
-			oauth(value) {
-				// console.log('三方登录只演示登录api能力，暂未关联云端数据');
-				console.log('login by ', value);
-				uni.login({
-					provider: value,
-					success: (wxRes) => {
-						console.log('res:', wxRes);
-						// {errMsg: "login:ok",code: "091Tvgll2QppF54NI5ml27XtSs1TvglM"}
-						console.log('code:', wxRes.code);
-						this.$http.post('auth/code', {
-							code: wxRes.code
-						}, {
-							custom: {
-								auth: false
-							},
-						}).then(codeRes => {
-							console.log('codeRes',codeRes)
-							
-							uni.getUserInfo({
-								provider: value,
-								success: (infoRes) => {
-									/**
-									 * 实际开发中，获取用户信息后，需要将信息上报至服务端。
-									 * 服务端可以用 userInfo.openId 作为用户的唯一标识新增或绑定用户信息。
-									 */
-									console.log('infoRes', infoRes);
-									this.$http.post('auth', {
-										iv: infoRes.iv,
-										encryptedData: infoRes.encryptedData,
-										nickName: infoRes.userInfo.nickName,
-										avatarUrl: infoRes.userInfo.avatarUrl
-									}, {
-										header: {
-											Authorization: codeRes.data.data.token
-										},
-										/* 会与全局header合并，如有同名属性，局部覆盖全局 */
-									}).then(authRes => {
-										console.log('authRes',authRes)
-										uni.setStorageSync('token', authRes.data.data.token)
-										this.loginLocal(authRes.data.data.user);
-									}).catch(authErr => {
-										console.log(authErr)
-									})
-
-								},
-								fail() {
-									uni.showToast({
-										icon: 'none',
-										title: '登录失败'
-									});
-								}
-							});
-						}).catch(authCodeErr => {
-							console.log(authCodeErr)
-						})
-
-					},
-					fail: (err) => {
-						console.error('授权登录失败：' + JSON.stringify(err));
-					}
-				});
-			},
-			getUserInfo({
-				detail
-			}) {
-				// console.log('三方登录只演示登录api能力，暂未关联云端数据');
-				if (detail.userInfo) {
-					console.log(detail);
-					this.loginLocal(detail.userInfo.nickName);
-				} else {
-					uni.showToast({
-						icon: 'none',
-						title: '登录失败'
-					});
-				}
-			},
-			loginLocal(user) {
-				uni.setStorageSync('login_type', 'local')
-				uni.setStorageSync('username', user.nickName)
-				uni.setStorageSync('avatarUrl', user.avatarUrl)
-				this.toMain(user.nickName);
-			},
-			toMain(userName) {
-				this.login(userName);
-				/**
-				 * 强制登录时使用reLaunch方式跳转过来
-				 * 返回首页也使用reLaunch方式
-				 */
-				if (this.forcedLogin) {
-					uni.reLaunch({
-						url: '../main/main',
-					});
-				} else {
-					uni.navigateBack();
-				}
-
-			}
 		},
-		onReady() {
+		onLoad() {
+			//默认加载
 			this.initPosition();
 			this.initProvider();
 			// #ifdef MP-WEIXIN
 			this.isDevtools = uni.getSystemInfoSync().platform === 'devtools';
 			// #endif
-		}
+		},
+		onReady() {
+			// #ifdef MP-WEIXIN
+			this.oauth('weixin');
+			// #endif
+		},
+
 	}
 </script>
 
@@ -458,5 +494,36 @@
 		width: 100%;
 		height: 100%;
 		opacity: 0;
+	}
+
+	.header {
+		margin: 90rpx 0 90rpx 50rpx;
+		border-bottom: 1px solid #ccc;
+		text-align: center;
+		width: 650rpx;
+		height: 300rpx;
+		line-height: 450rpx;
+	}
+
+	.header image {
+		width: 200rpx;
+		height: 200rpx;
+	}
+
+	.content {
+		margin-left: 50rpx;
+		margin-bottom: 90rpx;
+	}
+
+	.content text {
+		display: block;
+		color: #9d9d9d;
+		margin-top: 40rpx;
+	}
+
+	.bottom {
+		border-radius: 80rpx;
+		margin: 70rpx 50rpx;
+		font-size: 35rpx;
 	}
 </style>

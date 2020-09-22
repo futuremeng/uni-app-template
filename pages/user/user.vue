@@ -96,6 +96,8 @@
 			bindLogout() {
 				const loginType = uni.getStorageSync('login_type')
 				if (loginType === 'local') {
+					this.avatarUrl="../../static/img/logo.png"
+					uni.setStorageSync('avatarUrl', "../../static/img/logo.png")
 					this.logout();
 					if (this.forcedLogin) {
 						uni.reLaunch({

@@ -38,6 +38,8 @@
   "libVersion": "",
   "appid": "wxaf3581b7f2fa18a1",
   "projectname": "English-Lesson-Reivew",
+  "simulatorType": "wechat",
+  "simulatorPluginLibVersion": {},
   "condition": {
     "search": {
       "current": -1,
