@@ -19,7 +19,7 @@ export default {
   sslVerify: true,
   // #endif
   // #ifdef H5
-  withCredentials: false,
+  withCredentials: true,
   // #endif
   // #ifdef APP-PLUS
   firstIpv4: false,

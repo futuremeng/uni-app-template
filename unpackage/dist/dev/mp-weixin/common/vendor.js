@@ -9141,7 +9141,7 @@ function normalizeComponent (
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ 2));
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ 2));
 var _vuex = _interopRequireDefault(__webpack_require__(/*! vuex */ 8));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
 _vue.default.use(_vuex.default);
@@ -9153,21 +9153,27 @@ var store = new _vuex.default.Store({
             */
     forcedLogin: false,
     hasLogin: false,
-    userName: "" },
+    nickname: "",
+    avatar: '../../static/img/logo.png' },
 
   mutations: {
-    login: function login(state, userName) {
-      state.userName = userName || '新用户';
+    login: function login(state, profile) {
+      state.nickname = profile.nickname || '新用户';
+      state.avatar = profile.avatar;
       state.hasLogin = true;
+      console.log('state:', state.nickname, state.avatar);
     },
     logout: function logout(state) {
-      state.userName = "";
+      state.nickname = "";
+      state.avatar = '../../static/img/logo.png';
       state.hasLogin = false;
+      uni.removeStorageSync('token');
     } } });var _default =
 
 
 
 store;exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
 /* 13 */

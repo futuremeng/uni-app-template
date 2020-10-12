@@ -139,7 +139,7 @@
 						console.log('res:', oauthRes);
 						// {errMsg: "login:ok",code: "091Tvgll2QppF54NI5ml27XtSs1TvglM"}
 						console.log('code:', oauthRes.code);
-						_this.$http.post('auth/code', {
+						_this.$http.post('api/auth/code', {
 							code: oauthRes.code
 						}, {
 							custom: {
@@ -147,7 +147,7 @@
 							},
 						}).then(codeRes => {
 							console.log('codeRes', codeRes)
-							uni.setStorageSync('token', codeRes.data.data.token)
+							uni.setStorageSync('token', codeRes.data.token)
 							_this.updateUserInfo(provider);
 							uni.hideLoading();
 						}).catch(authCodeErr => {
@@ -180,14 +180,15 @@
 					});
 				}
 			},
-			loginLocal(user) {
-				uni.setStorageSync('login_type', 'local')
-				uni.setStorageSync('username', user.nickName)
-				uni.setStorageSync('avatarUrl', user.avatarUrl)
-				this.toMain(user.nickName);
+			loginLocal(profile) {
+				console.log('logging:',profile);
+				uni.setStorageSync('login_type', 'local');
+				uni.setStorageSync('nickname', profile.nickname);
+				uni.setStorageSync('avatar', profile.avatar);
+				this.login(profile);
+				this.toMain();
 			},
-			toMain(userName) {
-				this.login(userName);
+			toMain() {
 				/**
 				 * 强制登录时使用reLaunch方式跳转过来
 				 * 返回首页也使用reLaunch方式
@@ -211,15 +212,14 @@
 						 * 实际开发中，获取用户信息后，需要将信息上报至服务端。
 						 */
 						console.log('infoRes', infoRes);
-						_this.$http.post('auth', {
+						_this.$http.post('api/profile', {
 							iv: infoRes.iv,
 							encryptedData: infoRes.encryptedData,
-							nickName: infoRes.userInfo.nickName,
-							avatarUrl: infoRes.userInfo.avatarUrl
+							nickname: infoRes.userInfo.nickName,
+							avatar: infoRes.userInfo.avatarUrl
 						}).then(authRes => {
 							console.log('authRes', authRes)
-							uni.setStorageSync('token', authRes.data.data.token)
-							_this.loginLocal(authRes.data.data.user);
+							_this.loginLocal(authRes.data.profile);
 						}).catch(authErr => {
 							console.log(authErr)
 						})
@@ -277,7 +277,7 @@
 			// 					showCancel: false
 			// 				})
 			// 			}
-			
+
 			// 		},
 			// 		fail(e) {
 			// 			uni.showModal({
@@ -311,7 +311,7 @@
 			// 		password: this.password
 			// 	};
 			// 	let _self = this;
-			
+
 			// 	uniCloud.callFunction({
 			// 		name: 'user-center',
 			// 		data: {
@@ -319,9 +319,9 @@
 			// 			params: data
 			// 		},
 			// 		success: (e) => {
-			
+
 			// 			console.log('login success', e);
-			
+
 			// 			if (e.result.code == 0) {
 			// 				uni.setStorageSync('uniIdToken', e.result.token)
 			// 				uni.setStorageSync('username', e.result.username)
@@ -334,7 +334,7 @@
 			// 				})
 			// 				console.log('登录失败', e);
 			// 			}
-			
+
 			// 		},
 			// 		fail(e) {
 			// 			uni.showModal({
@@ -360,7 +360,7 @@
 			// 		return;
 			// 	}
 			// 	let _self = this;
-			
+
 			// 	uniCloud.callFunction({
 			// 		name: 'user-center',
 			// 		data: {
@@ -371,9 +371,9 @@
 			// 			}
 			// 		},
 			// 		success: (e) => {
-			
+
 			// 			console.log('login success', e);
-			
+
 			// 			if (e.result.code == 0) {
 			// 				const username = e.result.username || '新用户'
 			// 				uni.setStorageSync('uniIdToken', e.result.token)
@@ -387,7 +387,7 @@
 			// 				})
 			// 				console.log('登录失败', e);
 			// 			}
-			
+
 			// 		},
 			// 		fail(e) {
 			// 			uni.showModal({

@@ -204,15 +204,14 @@ var _vuex = __webpack_require__(/*! vuex */ 8);function ownKeys(object, enumerab
 
 {
   data: function data() {
-    return {
-      avatarUrl: "../../static/img/logo.png" };
+    return {};
 
   },
   computed: _objectSpread({},
-  (0, _vuex.mapState)(['hasLogin', 'forcedLogin', 'userName'])),
+  (0, _vuex.mapState)(['hasLogin', 'forcedLogin', 'nickname', 'avatar'])),
 
   methods: _objectSpread(_objectSpread({},
-  (0, _vuex.mapMutations)(['logout'])), {}, {
+  (0, _vuex.mapMutations)(['login', 'logout'])), {}, {
     bindLogin: function bindLogin() {
       if (this.hasLogin) {
         uni.navigateTo({
@@ -228,8 +227,6 @@ var _vuex = __webpack_require__(/*! vuex */ 8);function ownKeys(object, enumerab
     bindLogout: function bindLogout() {
       var loginType = uni.getStorageSync('login_type');
       if (loginType === 'local') {
-        this.avatarUrl = "../../static/img/logo.png";
-        uni.setStorageSync('avatarUrl', "../../static/img/logo.png");
         this.logout();
         if (this.forcedLogin) {
           uni.reLaunch({
@@ -281,7 +278,6 @@ var _vuex = __webpack_require__(/*! vuex */ 8);function ownKeys(object, enumerab
     } }),
 
   onReady: function onReady() {
-    this.avatarUrl = uni.getStorageSync('avatarUrl');
   } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 

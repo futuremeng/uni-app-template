@@ -27,7 +27,8 @@ button {
 	width: 750rpx;
 	height: 240rpx;
 	padding: 20rpx;
-	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	        box-sizing: border-box;
 	background-color: #0faeff;
 	-webkit-box-orient: horizontal;
 	-webkit-box-direction: normal;
@@ -43,7 +44,8 @@ button {
 .logo-img {
 	width: 150rpx;
 	height: 150rpx;
-	border-radius: 150rpx;
+	-webkit-border-radius: 150rpx;
+	        border-radius: 150rpx;
 }
 .logo-title {
 	height: 150rpx;
@@ -98,7 +100,8 @@ button {
 .center-list-item {
 	height: 90rpx;
 	width: 750rpx;
-	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	        box-sizing: border-box;
 	-webkit-box-orient: horizontal;
 	-webkit-box-direction: normal;
 	-webkit-flex-direction: row;

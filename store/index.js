@@ -10,16 +10,21 @@ const store = new Vuex.Store({
 		 */
 		forcedLogin: false,
 		hasLogin: false,
-		userName: ""
+		nickname: "",
+		avatar:'../../static/img/logo.png'
 	},
 	mutations: {
-		login(state, userName) {
-			state.userName = userName || '新用户';
+		login(state, profile) {
+			state.nickname = profile.nickname || '新用户';
+			state.avatar = profile.avatar;
 			state.hasLogin = true;
+			console.log('state:',state.nickname,state.avatar);
 		},
 		logout(state) {
-			state.userName = "";
+			state.nickname = "";
+			state.avatar = '../../static/img/logo.png';
 			state.hasLogin = false;
+			uni.removeStorageSync('token')
 		}
 	}
 })

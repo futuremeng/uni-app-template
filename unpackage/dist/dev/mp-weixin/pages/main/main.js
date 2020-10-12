@@ -160,16 +160,45 @@ var _vuex = __webpack_require__(/*! vuex */ 8);function ownKeys(object, enumerab
 
 
 {
-  computed: (0, _vuex.mapState)(['forcedLogin', 'hasLogin', 'userName']),
-  onLoad: function onLoad() {var _this = this;
+  computed: (0, _vuex.mapState)(['forcedLogin', 'hasLogin', 'nickname']),
+  methods: _objectSpread(_objectSpread({},
+  (0, _vuex.mapMutations)(['login'])), {}, {
+    guideToLogin: function guideToLogin() {var _this = this;
+      uni.showModal({
+        title: '未登录',
+        content: '您未登录，需要登录后才能继续',
+        /**
+                                    * 如果需要强制登录，不显示取消按钮
+                                    */
+        showCancel: !this.forcedLogin,
+        success: function success(res) {
+          if (res.confirm) {
+            /**
+                             * 如果需要强制登录，使用reLaunch方式
+                             */
+            if (_this.forcedLogin) {
+              uni.reLaunch({
+                url: '../login/login' });
+
+            } else {
+              uni.navigateTo({
+                url: '../login/login' });
+
+            }
+          }
+        } });
+
+    } }),
+
+  onLoad: function onLoad() {var _this2 = this;
     var loginType = uni.getStorageSync('login_type');
     if (loginType === 'local') {
-      this.login(uni.getStorageSync('username'));
+      this.login({ nickname: uni.getStorageSync('nickname'), avatar: uni.getStorageSync('avatar') });
       return;
     }
-    var uniIdToken = uni.getStorageSync('uniIdToken');
+    var uniIdToken = uni.getStorageSync('token');
     if (uniIdToken) {
-      this.login(uni.getStorageSync('username'));
+      this.login({ nickname: uni.getStorageSync('nickname'), avatar: uni.getStorageSync('avatar') });
       uniCloud.callFunction({
         name: 'user-center',
         data: {
@@ -181,7 +210,7 @@ var _vuex = __webpack_require__(/*! vuex */ 8);function ownKeys(object, enumerab
 
           if (e.result.code > 0) {
             //token过期或token不合法，重新登录
-            if (_this.forcedLogin) {
+            if (_this2.forcedLogin) {
               uni.reLaunch({
                 url: '../login/login' });
 
@@ -202,35 +231,7 @@ var _vuex = __webpack_require__(/*! vuex */ 8);function ownKeys(object, enumerab
     } else {
       this.guideToLogin();
     }
-  },
-  methods: _objectSpread(_objectSpread({},
-  (0, _vuex.mapMutations)(['login'])), {}, {
-    guideToLogin: function guideToLogin() {var _this2 = this;
-      uni.showModal({
-        title: '未登录',
-        content: '您未登录，需要登录后才能继续',
-        /**
-                                    * 如果需要强制登录，不显示取消按钮
-                                    */
-        showCancel: !this.forcedLogin,
-        success: function success(res) {
-          if (res.confirm) {
-            /**
-                             * 如果需要强制登录，使用reLaunch方式
-                             */
-            if (_this2.forcedLogin) {
-              uni.reLaunch({
-                url: '../login/login' });
-
-            } else {
-              uni.navigateTo({
-                url: '../login/login' });
-
-            }
-          }
-        } });
-
-    } }) };exports.default = _default;
+  } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"], __webpack_require__(/*! ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/uni-cloud/dist/index.js */ 33)["default"]))
 
 /***/ }),

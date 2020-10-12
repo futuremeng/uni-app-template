@@ -2,9 +2,9 @@
 	<view class="">
 		<view class="center">
 			<view class="logo" @click="bindLogin" :hover-class="!hasLogin ? 'logo-hover' : ''">
-				<image class="logo-img" :src="avatarUrl"></image>
+				<image class="logo-img" :src="avatar"></image>
 				<view class="logo-title">
-					<text class="uer-name">Hi，{{hasLogin ? userName : '您未登录'}}</text>
+					<text class="uer-name">Hi，{{hasLogin ? nickname : '您未登录'}}</text>
 					<text class="go-login navigat-arrow" v-if="!hasLogin">&#xe65e;</text>
 					<text class="go-login navigat-arrow" v-else>&#xe65e;</text>
 				</view>
@@ -73,14 +73,13 @@
 	export default {
 		data() {
 			return {
-				avatarUrl: "../../static/img/logo.png",
 			}
 		},
 		computed: {
-			...mapState(['hasLogin', 'forcedLogin', 'userName'])
+			...mapState(['hasLogin', 'forcedLogin', 'nickname', 'avatar'])
 		},
 		methods: {
-			...mapMutations(['logout']),
+			...mapMutations(['login', 'logout']),
 			bindLogin() {
 				if (this.hasLogin) {
 					uni.navigateTo({
@@ -96,8 +95,6 @@
 			bindLogout() {
 				const loginType = uni.getStorageSync('login_type')
 				if (loginType === 'local') {
-					this.avatarUrl="../../static/img/logo.png"
-					uni.setStorageSync('avatarUrl', "../../static/img/logo.png")
 					this.logout();
 					if (this.forcedLogin) {
 						uni.reLaunch({
@@ -149,7 +146,6 @@
 			},
 		},
 		onReady() {
-			this.avatarUrl = uni.getStorageSync('avatarUrl')
 		}
 	}
 </script>

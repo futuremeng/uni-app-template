@@ -23,7 +23,7 @@ http.interceptors.request.use((config) => { // 可使用async await 做异步操
 		if (!token) { // 如果token不存在，return Promise.reject(config) 会取消本次请求
 			return Promise.reject(config)
 		}
-		config.header.Authorization = token
+		config.header.Authorization ='Bearer '+ token
 	}
 	// if (config.custom.loading) {
 	//  uni.showLoading()
