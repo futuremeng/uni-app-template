@@ -130,7 +130,7 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni, uniCloud) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;
 
 
 
@@ -190,49 +190,19 @@ var _vuex = __webpack_require__(/*! vuex */ 8);function ownKeys(object, enumerab
 
     } }),
 
-  onLoad: function onLoad() {var _this2 = this;
+  onLoad: function onLoad() {
     var loginType = uni.getStorageSync('login_type');
-    if (loginType === 'local') {
-      this.login({ nickname: uni.getStorageSync('nickname'), avatar: uni.getStorageSync('avatar') });
+    if (loginType === 'local' && uni.getStorageSync('token')) {
+      this.login({
+        nickname: uni.getStorageSync('nickname'),
+        avatar: uni.getStorageSync('avatar') });
+
       return;
-    }
-    var uniIdToken = uni.getStorageSync('token');
-    if (uniIdToken) {
-      this.login({ nickname: uni.getStorageSync('nickname'), avatar: uni.getStorageSync('avatar') });
-      uniCloud.callFunction({
-        name: 'user-center',
-        data: {
-          action: 'checkToken' },
-
-        success: function success(e) {
-
-          console.log('checkToken success', e);
-
-          if (e.result.code > 0) {
-            //token过期或token不合法，重新登录
-            if (_this2.forcedLogin) {
-              uni.reLaunch({
-                url: '../login/login' });
-
-            } else {
-              uni.navigateTo({
-                url: '../login/login' });
-
-            }
-          }
-        },
-        fail: function fail(e) {
-          uni.showModal({
-            content: JSON.stringify(e),
-            showCancel: false });
-
-        } });
-
     } else {
       this.guideToLogin();
     }
   } };exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"], __webpack_require__(/*! ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/uni-cloud/dist/index.js */ 33)["default"]))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
 

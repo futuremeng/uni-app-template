@@ -1,6 +1,6 @@
 # uni-template-login
 
-基于 uni-app & uniCloud 的前后一体登录模板
+基于 uni-app 的前后一体登录模板
 
 ![](https://img-cdn-qiniu.dcloud.net.cn/7E6B79E2-B469-4CF3-8F4D-7502E72C4CB8.png?imageView2/0/w/375)
 ![](https://img-cdn-qiniu.dcloud.net.cn/659AE293-95F8-46E1-AC1F-D62FE3B080DB.png?imageView2/0/w/375)
@@ -23,6 +23,6 @@
 ## 特点
 
 - 前端基于uni-app实现，支持所有平台
-- 服务端基于 uniCloud 实现，用户管理基于 [uni-id](https://uniapp.dcloud.net.cn/uniCloud/uni-id) 实现
+- 服务端参考但不是基于 uniCloud 实现，后台支持通过laravel或其他框架实现
 - 使用 vuex 管理登录状态
 - 支持账号密码、手机号验证等多种登录模式
